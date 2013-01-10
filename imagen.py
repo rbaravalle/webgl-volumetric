@@ -7,9 +7,9 @@ from matplotlib import pyplot as plt
 
 
 
-maxX = 110
-maxZ = 110
-maxY = 110
+maxX = 100
+maxZ = 100
+maxY = 100
 
 I = Image.new('L',(maxZ,maxX*maxY),0.0)
 
@@ -145,7 +145,7 @@ for i in range(0,maxX):
                 j = max(0,min(j,maxZ-1))
                 field[k][i][j] = np.uint8(0)
 
-plt.imshow(field[maxZ/2], cmap=matplotlib.cm.gray)
+plt.imshow(field[0], cmap=matplotlib.cm.gray)
 plt.show()
 
 rowsPerSlice = maxY

@@ -189,7 +189,7 @@ function initScene() {
   var voltex = THREE.ImageUtils.loadTexture("textures/imagen.png");
   voltex.minFilter = voltex.magFilter = THREE.LinearFilter;
   voltex.wrapS = voltex.wrapT = THREE.ClampToEdgeWrapping;
-  var SIDESIZE = 110;
+  var SIDESIZE = 100;
   var voltexDim = new THREE.Vector3(SIDESIZE, SIDESIZE, SIDESIZE);
   
   //var volcol = new THREE.Vector3(189/255.0, 175/255.0, 146/255.0);
