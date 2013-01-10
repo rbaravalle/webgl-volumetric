@@ -20,7 +20,7 @@ precision highp float;
 //---------------------------------------------------------
 
 // 32 48 64 96 128
-#define MAX_STEPS 96
+#define MAX_STEPS 512
 
 #define LIGHT_NUM 2
 //#define uTMK 20.0
@@ -168,7 +168,7 @@ vec4 raymarchLight(vec3 ro, vec3 rd) {
   for (int i=0; i<MAX_STEPS; ++i) {
     // delta transmittance 
     float dtm = exp( -uTMK*gStepSize*sampleVolTex(pos) );
-    tm *= dtm;
+    tm *= 1.002*dtm;
     
     // get contribution per light
     for (int k=0; k<LIGHT_NUM; ++k) {
@@ -198,7 +198,7 @@ void main() {
   //vec3 rd = normalize(ro-uCamPos);
   
   // step_size = root_three / max_steps ; to get through diagonal  
-  gStepSize = ROOTTHREE / float(MAX_STEPS);
+  gStepSize = ROOTTHREE / float(MAX_STEPS)*2.0;
   gStepFactor = 32.0 * gStepSize;
   
   gl_FragColor = raymarchLight(ro, rd);
