@@ -20,9 +20,9 @@ precision highp float;
 //---------------------------------------------------------
 
 // 32 48 64 96 128
-#define MAX_STEPS 512
+#define MAX_STEPS 128
 
-#define LIGHT_NUM 2
+#define LIGHT_NUM 1
 //#define uTMK 20.0
 #define TM_MIN 0.05
 
@@ -99,7 +99,7 @@ float getDensity(vec3 ro, vec3 rd) {
     
     pos += step;
     
-    if (density > 0.95 ||
+    if (density > 0.05 ||
       pos.x > 1.0 || pos.x < 0.0 ||
       pos.y > 1.0 || pos.y < 0.0 ||
       pos.z > 1.0 || pos.z < 0.0)
@@ -168,14 +168,14 @@ vec4 raymarchLight(vec3 ro, vec3 rd) {
   for (int i=0; i<MAX_STEPS; ++i) {
     // delta transmittance 
     float dtm = exp( -uTMK*gStepSize*sampleVolTex(pos) );
-    tm *= 1.002*dtm;
+    tm *= dtm;
     
     // get contribution per light
     for (int k=0; k<LIGHT_NUM; ++k) {
       vec3 ld = normalize( toLocal(uLightP[k])-pos );
       float ltm = getTransmittance(pos,ld);
       
-      col += (1.0-dtm) * uColor*uLightC[k] * tm * ltm;
+      col += (1.0-dtm) * uColor*uLightC[k] * tm * ltm*1.5;
     }
     
     pos += step;
@@ -198,10 +198,17 @@ void main() {
   //vec3 rd = normalize(ro-uCamPos);
   
   // step_size = root_three / max_steps ; to get through diagonal  
-  gStepSize = ROOTTHREE / float(MAX_STEPS)*2.0;
+  gStepSize = ROOTTHREE / float(MAX_STEPS);
   gStepFactor = 32.0 * gStepSize;
   
-  gl_FragColor = raymarchLight(ro, rd);
+  float x2 = (ro.x-0.5);
+  float y2 = (ro.y-0.5);
+  vec3 colCrust;
+  colCrust.x = 224.0/255.0;
+  colCrust.y = 156.0/255.0;
+  colCrust.z = 95.0/255.0;
+
+  gl_FragColor = (x2*x2+y2*y2)*(vec4(colCrust,1.0))+raymarchLight(ro, rd);
   //gl_FragColor = vec4(uColor, getDensity(ro,rd));
   //gl_FragColor = vec4(vec3(sampleVolTex(pos)), 1.0);
   //gl_FragColor = vec4(vPos1n, 1.0);

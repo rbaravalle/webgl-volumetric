@@ -112,9 +112,9 @@ function animate() {
   //g.cube.rotation.y += 0.01;  
   //g.cube.position.y = 2.0*Math.sin(g.time);
   
-  g.lightP[0].x = 2.0*Math.sin(g.time);
+  /*g.lightP[0].x = 2.0*Math.sin(g.time);
   g.lightP[0].z = 2.0*Math.cos(g.time);
-  g.lightP[0].y = 1.5;
+  g.lightP[0].y = 1.5;*/
   
   /*g.lightP[1].x = 2.0;
   g.lightP[1].z = 2.0;
@@ -148,7 +148,7 @@ function addLight(pos, col) {
 function initScene() {
   
   // fog
-  g.scene.fog = new THREE.Fog( 0xFF0000, c.FOG_NEAR, c.FOG_FAR );
+  //g.scene.fog = new THREE.Fog( 0x000000, c.FOG_NEAR, c.FOG_FAR );
 
   //// ground
   //(function() {
@@ -181,7 +181,7 @@ function initScene() {
   //})();
   
   // lights
-  addLight(new THREE.Vector3(2, 2, 1), new THREE.Vector3(245/255.0, 245/255.0, 245/255.0));
+  addLight(new THREE.Vector3(0.2, 0.2, 20), new THREE.Vector3(245/255.0, 245/255.0, 245/255.0));
   //addLight(new THREE.Vector3(-2, 1, -3), new THREE.Vector3(253/255.0, 245/255.0, 206/255.0));
 
   // the cube
@@ -194,7 +194,7 @@ function initScene() {
   
   //var volcol = new THREE.Vector3(189/255.0, 175/255.0, 146/255.0);
   //var volcol = new THREE.Vector3(219/255.0, 204/255.0, 173/255.0);
-  var volcol = new THREE.Vector3(227/255.0, 212/255.0, 183/255.0);
+  var volcol = new THREE.Vector3(252/255.0, 237/255.0, 208/255.0);
   
   g.offset = new THREE.Vector3();
     
@@ -260,10 +260,10 @@ function mousetrap() {
     g.offset.y+=STEP;
   });
   Mousetrap.bind("left", function() {
-    g.offset.x-=STEP;
+    g.offset.z-=STEP;
   });
   Mousetrap.bind("right", function() {
-    g.offset.x+=STEP;
+    g.offset.z+=STEP;
   });
   
   Mousetrap.bind("shift+r", function() {
