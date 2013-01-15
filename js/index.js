@@ -38,7 +38,7 @@ function init() {
     c.CAM_NEAR,
     c.CAM_FAR
   );
-  g.camera.position.set(0, 0, -2);
+  g.camera.position.set(0, 0, 2);
   g.camera.lookAt(new THREE.Vector3());
 
   // scene
@@ -77,6 +77,10 @@ function init() {
   // add line
   g.guiline = g.gui.add(g.uniforms.uTMK, "value").min(0.0).max(64.0).step(1);
   g.guiline.name("transmittance");
+  g.guiline = g.gui.add(g.uniforms.uTMK2, "value").min(0.0).max(64.0).step(1);
+  g.guiline.name("transmittance 2");
+  g.guiline = g.gui.add(g.uniforms.uShininess, "value").min(0.0).max(64.0).step(1);
+  g.guiline.name("shininess");
 
   window.addEventListener( 'resize', onWindowResize, false );
 }
@@ -181,7 +185,7 @@ function initScene() {
   //})();
   
   // lights
-  addLight(new THREE.Vector3(0.2, 0.2, 20), new THREE.Vector3(245/255.0, 245/255.0, 245/255.0));
+  addLight(new THREE.Vector3(0.2, 0.2, 2), new THREE.Vector3(245/255.0, 245/255.0, 245/255.0));
   //addLight(new THREE.Vector3(-2, 1, -3), new THREE.Vector3(253/255.0, 245/255.0, 206/255.0));
 
   // the cube
@@ -194,7 +198,8 @@ function initScene() {
   
   //var volcol = new THREE.Vector3(189/255.0, 175/255.0, 146/255.0);
   //var volcol = new THREE.Vector3(219/255.0, 204/255.0, 173/255.0);
-  var volcol = new THREE.Vector3(252/255.0, 237/255.0, 208/255.0);
+  //var volcol = new THREE.Vector3(252/255.0, 237/255.0, 208/255.0);
+  var volcol = new THREE.Vector3(211/255.0, 209/255.0, 186/255.0);
   
   g.offset = new THREE.Vector3();
     
@@ -206,7 +211,9 @@ function initScene() {
     uTex:       { type: "t", value: 0, texture: voltex },
     uTexDim:    { type: "v3", value: voltexDim },
     uOffset:    { type: "v3", value: g.offset },
-    uTMK:       { type: "f", value: 12.0 }
+    uTMK:       { type: "f", value: 12.0 },
+    uTMK2:      { type: "f", value: 12.0 },
+    uShininess: { type: "f", value: 1.0 }
   }
   
   var shader = new THREE.ShaderMaterial({
@@ -270,7 +277,7 @@ function mousetrap() {
     console.log("hotkey: reset camera");
     g.camera.position.set(0, 0, -2);
     g.camera.up.set(0, 1, 0);
-    g.camera.lookAt(new THREE.Vector3());
+    g.camera.lookAt(new THREE.Vector3(0,0,0));
   });
 }
 

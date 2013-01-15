@@ -20,11 +20,12 @@ precision highp float;
 //---------------------------------------------------------
 
 // 32 48 64 96 128
-#define MAX_STEPS 128
+#define MAX_STEPS 256
 
 #define LIGHT_NUM 1
 //#define uTMK 20.0
-#define TM_MIN 0.05
+#define TM_MIN 0.25
+//#define TM_MAX 0.85
 
 
 //---------------------------------------------------------
@@ -48,6 +49,8 @@ uniform sampler2D uTex;   // 3D(2D) volume texture
 uniform vec3 uTexDim;     // dimensions of texture
 
 uniform float uTMK;
+uniform float uTMK2;
+uniform float uShininess;
 
 float gStepSize;
 float gStepFactor;
@@ -60,6 +63,11 @@ float gStepFactor;
 // TODO: convert world to local volume space
 vec3 toLocal(vec3 p) {
   return p + vec3(0.5);
+}
+
+
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
 float sampleVolTex(vec3 pos) {
@@ -131,6 +139,7 @@ float getTransmittance(vec3 ro, vec3 rd) {
   return tm;
 }
 
+
 vec4 raymarchNoLight(vec3 ro, vec3 rd) {
   vec3 step = rd*gStepSize;
   vec3 pos = ro;
@@ -167,15 +176,15 @@ vec4 raymarchLight(vec3 ro, vec3 rd) {
   
   for (int i=0; i<MAX_STEPS; ++i) {
     // delta transmittance 
-    float dtm = exp( -uTMK*gStepSize*sampleVolTex(pos) );
-    tm *= dtm;
+    float dtm = exp( -uTMK2*gStepSize*sampleVolTex(pos) );
+    tm *= dtm*(1.000+(uShininess*0.001));
     
     // get contribution per light
     for (int k=0; k<LIGHT_NUM; ++k) {
       vec3 ld = normalize( toLocal(uLightP[k])-pos );
       float ltm = getTransmittance(pos,ld);
       
-      col += (1.0-dtm) * uColor*uLightC[k] * tm * ltm*1.5;
+      col += (1.0-dtm) * uColor*uLightC[k] * tm * ltm;
     }
     
     pos += step;
@@ -188,6 +197,7 @@ vec4 raymarchLight(vec3 ro, vec3 rd) {
   }
   
   float alpha = 1.0-tm;
+  //if(alpha > 0.7) alpha = 0.7;
   return vec4(col/alpha, alpha);
 }
 
@@ -204,11 +214,15 @@ void main() {
   float x2 = (ro.x-0.5);
   float y2 = (ro.y-0.5);
   vec3 colCrust;
-  colCrust.x = 224.0/255.0;
-  colCrust.y = 156.0/255.0;
-  colCrust.z = 95.0/255.0;
+  colCrust.x = 254.0/255.0;
+  colCrust.y = 196.0/255.0;
+  colCrust.z = 175.0/255.0;
 
-  gl_FragColor = (x2*x2+y2*y2)*(vec4(colCrust,1.0))+raymarchLight(ro, rd);
+/*if(x2*x2+y2*y2 > 0.4)
+      gl_FragColor = ((x2*x2+y2*y2)*vec4(colCrust,1.0))*0.6+raymarchLight(ro, rd);
+  else*/
+      gl_FragColor = raymarchLight(ro, rd);
+
   //gl_FragColor = vec4(uColor, getDensity(ro,rd));
   //gl_FragColor = vec4(vec3(sampleVolTex(pos)), 1.0);
   //gl_FragColor = vec4(vPos1n, 1.0);
