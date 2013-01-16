@@ -20,7 +20,7 @@ precision highp float;
 //---------------------------------------------------------
 
 // 32 48 64 96 128
-#define MAX_STEPS 256
+#define MAX_STEPS 512
 
 #define LIGHT_NUM 1
 //#define uTMK 20.0
@@ -66,7 +66,7 @@ vec3 toLocal(vec3 p) {
 }
 
 
-float rand(vec2 co){
+float randn(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
@@ -213,15 +213,18 @@ void main() {
   
   float x2 = (ro.x-0.5);
   float y2 = (ro.y-0.5);
-  vec3 colCrust;
-  colCrust.x = 254.0/255.0;
-  colCrust.y = 196.0/255.0;
-  colCrust.z = 175.0/255.0;
+  vec3 colCrust,colCrust2;
+  colCrust2.x = 253.0/255.0;
+  colCrust2.y = 178.0/255.0;
+  colCrust2.z = 102.0/255.0;
+  colCrust.x = 236.0/255.0;
+  colCrust.y = 216.0/255.0;
+  colCrust.z = 179.0/255.0;
 
-/*if(x2*x2+y2*y2 > 0.4)
-      gl_FragColor = ((x2*x2+y2*y2)*vec4(colCrust,1.0))*0.6+raymarchLight(ro, rd);
-  else*/
-      gl_FragColor = raymarchLight(ro, rd);
+  if(x2*x2+y2*y2 > 0.2)
+      gl_FragColor = vec4(0.1,0.1,0.1,1.0) +3.1*((x2*x2+y2*y2)*vec4(colCrust2,1.0))*raymarchLight(ro, rd);
+  else
+      gl_FragColor = vec4(0.1,0.1,0.1,1.0) + vec4(colCrust,1.0)*raymarchLight(ro, rd);
 
   //gl_FragColor = vec4(uColor, getDensity(ro,rd));
   //gl_FragColor = vec4(vec3(sampleVolTex(pos)), 1.0);

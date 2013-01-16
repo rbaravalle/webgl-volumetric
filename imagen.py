@@ -7,9 +7,9 @@ from matplotlib import pyplot as plt
 
 
 
-maxX = 100
-maxZ = 100
-maxY = 100
+maxX = 125
+maxZ = 125
+maxY = 125
 
 I = Image.new('L',(maxZ,maxX*maxY),0.0)
 
@@ -17,8 +17,7 @@ field = np.zeros((maxX, maxY, maxZ)).astype(np.uint8) + np.uint8(255)
 points = np.zeros((10*10*10*3000)).astype(np.uint8)
 points2 = np.zeros((10*10*10*150)).astype(np.uint8)
 
-r = 2;
-sep1 = 18;
+r = 1;
 h = 0;
 lifetime = 240
 ch = 60
@@ -97,7 +96,7 @@ l = h
 print "Bigger Bubbles"
 print "Total: ", h
 for h in range(0,l,3):
-    r = randint(10,14)
+    r = randint(7,16)
     if(h%2000 == 0): print h
     for i in range(points2[h]-r-1,points2[h]+r+1):
         for j in range(points2[h+1]-r-1,points2[h+1]+r+1):
@@ -116,13 +115,13 @@ print "Cortando"
 for i in range(0,maxX):
     for j in range(0,maxY):
         for k in range(0,maxZ):
-            i2 = i-maxX/2.0
-            j2 = j-maxY/2.0
-            k2 = k-maxZ/2.0
-            if(j2*j2/2800+k2*k2/3250>1):
+            i2 = i-maxX/2.0+randint(0,5)
+            j2 = j-maxY/2.0+randint(0,5)
+            k2 = k-maxZ/2.0+randint(0,5)
+            if(j2*j2/3200+k2*k2/3800>1):
                 field[k][i][j] = np.uint8(0)
-            #if(k2 > 30 or i2 > 35):
-            #    field[k][i][j] = np.uint8(0)
+            if(k2 > 65 or i2 > 25):
+                field[k][i][j] = np.uint8(0)
                 
 
 plt.imshow(field[maxZ/2], cmap=matplotlib.cm.gray)
