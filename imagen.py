@@ -7,9 +7,9 @@ from matplotlib import pyplot as plt
 
 
 
-maxX = 125
-maxZ = 125
-maxY = 125
+maxX = 127
+maxZ = 127
+maxY = 127
 
 I = Image.new('L',(maxZ,maxX*maxY),0.0)
 
@@ -115,13 +115,13 @@ print "Cortando"
 for i in range(0,maxX):
     for j in range(0,maxY):
         for k in range(0,maxZ):
-            i2 = i-maxX/2.0+randint(0,5)
-            j2 = j-maxY/2.0+randint(0,5)
-            k2 = k-maxZ/2.0+randint(0,5)
-            if(j2*j2/3200+k2*k2/3800>1):
+            i2 = i-maxX/2.0+randint(0,3)
+            j2 = j-maxY/2.0+randint(0,3)
+            k2 = k-maxZ/2.0+randint(0,3)
+            if(j2*j2/4500+k2*k2/3500>1):
                 field[k][i][j] = np.uint8(0)
-            if(k2 > 65 or i2 > 25):
-                field[k][i][j] = np.uint8(0)
+            #if(k2 > 95 or i2 > 55):
+            #    field[k][i][j] = np.uint8(0)
                 
 
 plt.imshow(field[maxZ/2], cmap=matplotlib.cm.gray)

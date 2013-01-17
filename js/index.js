@@ -79,8 +79,12 @@ function init() {
   g.guiline.name("transmittance");
   g.guiline = g.gui.add(g.uniforms.uTMK2, "value").min(0.0).max(64.0).step(1);
   g.guiline.name("transmittance 2");
-  g.guiline = g.gui.add(g.uniforms.uShininess, "value").min(0.0).max(64.0).step(1);
+  g.guiline = g.gui.add(g.uniforms.uShininess, "value").min(0.0).max(8.0).step(0.1);
   g.guiline.name("shininess");
+  g.guiline = g.gui.add(g.uniforms.uCrust, "value").min(1.0).max(16.0).step(1);
+  g.guiline.name("crust influence");
+  g.guiline = g.gui.add(g.uniforms.uShin2, "value").min(1.0).max(6.0).step(0.1);
+  g.guiline.name("second shininess");
 
   window.addEventListener( 'resize', onWindowResize, false );
 }
@@ -188,14 +192,14 @@ function initScene() {
   addLight(new THREE.Vector3(2, 2, 2), new THREE.Vector3(245/255.0, 245/255.0, 245/255.0));
   //addLight(new THREE.Vector3(-2, 1, -3), new THREE.Vector3(253/255.0, 245/255.0, 206/255.0));
  // add subtle ambient lighting
-        var ambientLight = new THREE.AmbientLight(0x555555);
-        g.scene.add(ambientLight);
+    var ambientLight = new THREE.AmbientLight(0x555555);
+    g.scene.add(ambientLight);
   // the cube
   
   var voltex = THREE.ImageUtils.loadTexture("textures/imagen.png");
   voltex.minFilter = voltex.magFilter = THREE.LinearFilter;
   voltex.wrapS = voltex.wrapT = THREE.ClampToEdgeWrapping;
-  var SIDESIZE = 125;
+  var SIDESIZE = 127;
   var voltexDim = new THREE.Vector3(SIDESIZE, SIDESIZE, SIDESIZE);
   
   //var volcol = new THREE.Vector3(189/255.0, 175/255.0, 146/255.0);
@@ -215,8 +219,10 @@ function initScene() {
     uTexDim:    { type: "v3", value: voltexDim },
     uOffset:    { type: "v3", value: g.offset },
     uTMK:       { type: "f", value: 12.0 },
-    uTMK2:      { type: "f", value: 12.0 },
-    uShininess: { type: "f", value: 1.0 }
+    uTMK2:      { type: "f", value: 45.0 },
+    uShininess: { type: "f", value: 2.0 },
+    uCrust:     { type: "f", value: 2.0 },
+    uShin2:     { type: "f", value: 2.8 },
   }
   
   var shader = new THREE.ShaderMaterial({
@@ -238,15 +244,20 @@ function initScene() {
     new THREE.CubeGeometry( 1.0, 1.0, 1.0 ),    // must be unit cube
     shader //new THREE.MeshLambertMaterial( { color: 0xCCCCCC } )
   );
-  g.cylinder = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), new THREE.MeshBasicMaterial({
+  g.cube2 = new THREE.Mesh(
+    new THREE.CubeGeometry( 1.0, 1.0, 1.0 ),    // must be unit cube
+    shader //new THREE.MeshLambertMaterial( { color: 0xCCCCCC } )
+  );
+  /*g.cylinder = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), new THREE.MeshBasicMaterial({
             color: 0xAA5511
-        }));
+        }));*/
 
   //g.cube.position.set(0.0, 0.0, 0.0);
   //g.cube.scale.set(3.0, 3.0, 3.0);      // scale later
   //g.cylinder.positon.set(0.0, 0.0, 0.0);
   g.cube.position.set(0.0, 0.0, 0.0);
   g.scene.add(g.cube);
+  //g.scene.add(g.cube2);
   //g.scene.add(g.cylinder);
 }
 
