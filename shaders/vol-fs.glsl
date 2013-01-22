@@ -200,7 +200,7 @@ vec4 raymarchLight(vec3 ro, vec3 rd) {
   
   float alpha = 1.0-tm;
   //if(alpha > 0.7) alpha = 0.7;
-  return vec4(col/alpha, alpha);
+  return vec4(col/alpha, 1.0);
 }
 
 void main() {
@@ -225,15 +225,15 @@ void main() {
   colCrust.z = 179.0/255.0;
   colCrust.a = 1.0;
 
-  vec4 temp = raymarchLight(ro, rd);
-  if(x2*x2+y2*y2 > 0.25) {
+    vec4 temp = raymarchLight(ro, rd);
+  /*if(x2*x2/2.0+y2*y2 > 0.09) {
       float sum = temp.x*temp.y*temp.z;
-      if(sum > 0.005  ) {
-          gl_FragColor = vec4(0.1,0.1,0.1,1.0)+uShin2*(x2*x2+y2*y2)*colCrust2+temp/uCrust;
+      if(sum > 0.01  ) {
+          gl_FragColor = colCrust2/8.0+vec4(0.2,0.2,0.2,1.0)+uShin2*(x2*x2+y2*y2)*colCrust2*temp/uCrust;
       }
-      //else gl_FragColor = (x2*x2+y2*y2)*colCrust2+temp/3.0;
+      //else gl_FragColor = vec4(0.1,0.1,0.1,0.1)+temp;
   }
-  else
+  else*/
       gl_FragColor = vec4(0.1,0.1,0.1,1.0)+temp;
 
   //gl_FragColor = vec4(uColor, getDensity(ro,rd));

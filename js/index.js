@@ -24,7 +24,7 @@ function init() {
   // renderer
   g.renderer = new THREE.WebGLRenderer({ 
     clearAlpha: 0,
-    clearColor: 0x000000,
+    clearColor: 0x222222,
     antialias: true
   });
   g.renderer.setSize( g.width, g.height );
@@ -38,7 +38,7 @@ function init() {
     c.CAM_NEAR,
     c.CAM_FAR
   );
-  g.camera.position.set(0, 0, 2);
+  g.camera.position.set(0, 0, -2);
   g.camera.lookAt(new THREE.Vector3());
 
   // scene
@@ -189,7 +189,7 @@ function initScene() {
   //})();
   
   // lights
-  addLight(new THREE.Vector3(2, 2, 2), new THREE.Vector3(245/255.0, 245/255.0, 245/255.0));
+  addLight(new THREE.Vector3(2, 2, -2), new THREE.Vector3(245/255.0, 245/255.0, 245/255.0));
   //addLight(new THREE.Vector3(-2, 1, -3), new THREE.Vector3(253/255.0, 245/255.0, 206/255.0));
  // add subtle ambient lighting
     var ambientLight = new THREE.AmbientLight(0x555555);
@@ -199,7 +199,7 @@ function initScene() {
   var voltex = THREE.ImageUtils.loadTexture("textures/imagen.png");
   voltex.minFilter = voltex.magFilter = THREE.LinearFilter;
   voltex.wrapS = voltex.wrapT = THREE.ClampToEdgeWrapping;
-  var SIDESIZE = 127;
+  var SIDESIZE = 128;
   var voltexDim = new THREE.Vector3(SIDESIZE, SIDESIZE, SIDESIZE);
   
   //var volcol = new THREE.Vector3(189/255.0, 175/255.0, 146/255.0);
@@ -239,15 +239,25 @@ function initScene() {
   //    new THREE.MeshBasicMaterial( { wireframe: true, transparent: true, opacity: 0.1 } )
   //  ]
   //)
-  
+    var texture, material, plane;
+
+    texture = THREE.ImageUtils.loadTexture( "textures/wood.jpg" );
+    texture.wrapT = THREE.RepeatWrapping;  // This doesn't seem to work;
+    material = new THREE.MeshLambertMaterial({ map : texture });
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+    plane.doubleSided = true;
+    plane.position.y = -0.15;
+    //plane.rotation.z = 0;  // Not sure what this number represents.
+    g.scene.add(plane);
+
   g.cube = new THREE.Mesh(
     new THREE.CubeGeometry( 1.0, 1.0, 1.0 ),    // must be unit cube
     shader //new THREE.MeshLambertMaterial( { color: 0xCCCCCC } )
   );
-  g.cube2 = new THREE.Mesh(
+  /*g.cube2 = new THREE.Mesh(
     new THREE.CubeGeometry( 1.0, 1.0, 1.0 ),    // must be unit cube
     shader //new THREE.MeshLambertMaterial( { color: 0xCCCCCC } )
-  );
+  );*/
   /*g.cylinder = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), new THREE.MeshBasicMaterial({
             color: 0xAA5511
         }));*/
