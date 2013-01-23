@@ -168,7 +168,7 @@ vec4 raymarchNoLight(vec3 ro, vec3 rd) {
   return vec4(col/alpha, alpha);
 }
 
-vec4 raymarchLight(vec3 ro, vec3 rd) {
+vec4 raymarchLight(vec3 ro, vec3 rd,float tr) {
   vec3 step = rd*gStepSize;
   vec3 pos = ro;
   
@@ -178,7 +178,8 @@ vec4 raymarchLight(vec3 ro, vec3 rd) {
   
   for (int i=0; i<MAX_STEPS; ++i) {
     // delta transmittance 
-    float dtm = exp( -uTMK2*gStepSize*sampleVolTex(pos) );
+    float dtm = exp( -tr*gStepSize*sampleVolTex(pos) );
+    //float dtm = exp( -uTMK2*gStepSize*sampleVolTex(pos) );
     tm *= dtm*(1.000+(uShininess*0.001));
     
     // get contribution per light
@@ -200,7 +201,7 @@ vec4 raymarchLight(vec3 ro, vec3 rd) {
   
   float alpha = 1.0-tm;
   //if(alpha > 0.7) alpha = 0.7;
-  return vec4(col/alpha, 1.0);
+  return vec4(col/alpha, alpha);
 }
 
 void main() {
@@ -216,25 +217,27 @@ void main() {
   float x2 = (ro.x-0.5);
   float y2 = (ro.y-0.5);
   vec4 colCrust,colCrust2;
-  colCrust2.x = 253.0/255.0;
-  colCrust2.y = 178.0/255.0;
-  colCrust2.z = 102.0/255.0;
+  colCrust2.x = 104.0/255.0;
+  colCrust2.y = 52.0/255.0;
+  colCrust2.z = 30.0/255.0;
   colCrust2.a = 1.0;
-  colCrust.x = 236.0/255.0;
-  colCrust.y = 216.0/255.0;
-  colCrust.z = 179.0/255.0;
+  colCrust.x = 165.0/255.0;
+  colCrust.y = 122.0/255.0;
+  colCrust.z = 88.0/255.0;
   colCrust.a = 1.0;
 
-    vec4 temp = raymarchLight(ro, rd);
-  /*if(x2*x2/2.0+y2*y2 > 0.09) {
+  float v = x2*x2+y2*y2/1.6;
+  if(v > 0.15) {
+      vec4 temp = raymarchLight(ro, rd,uTMK2*8.0*v);// + vec4(0.1,0.1,0.1,1.0);
       float sum = temp.x*temp.y*temp.z;
-      if(sum > 0.01  ) {
-          gl_FragColor = colCrust2/8.0+vec4(0.2,0.2,0.2,1.0)+uShin2*(x2*x2+y2*y2)*colCrust2*temp/uCrust;
+      if(sum > 0.001  ) {
+          float flag = clamp(uShin2*((v-0.15)/0.08),0.0,1.0);
+          temp = ((1.0-flag)*colCrust +flag*colCrust2)/(1.0/uCrust)+temp/uCrust;
+          gl_FragColor = temp;
       }
-      //else gl_FragColor = vec4(0.1,0.1,0.1,0.1)+temp;
   }
-  else*/
-      gl_FragColor = vec4(0.1,0.1,0.1,1.0)+temp;
+  else
+    gl_FragColor = raymarchLight(ro, rd,uTMK2) + vec4(0.2,0.2,0.2,1.0);
 
   //gl_FragColor = vec4(uColor, getDensity(ro,rd));
   //gl_FragColor = vec4(vec3(sampleVolTex(pos)), 1.0);

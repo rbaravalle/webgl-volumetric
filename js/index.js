@@ -120,9 +120,9 @@ function animate() {
   //g.cube.rotation.y += 0.01;  
   //g.cube.position.y = 2.0*Math.sin(g.time);
   
-  /*g.lightP[0].x = 2.0*Math.sin(g.time);
+  g.lightP[0].x = 2.0*Math.sin(g.time);
   g.lightP[0].z = 2.0*Math.cos(g.time);
-  g.lightP[0].y = 1.5;*/
+  g.lightP[0].y = 1.5;
   
   /*g.lightP[1].x = 2.0;
   g.lightP[1].z = 2.0;
@@ -221,7 +221,7 @@ function initScene() {
     uTMK:       { type: "f", value: 12.0 },
     uTMK2:      { type: "f", value: 45.0 },
     uShininess: { type: "f", value: 2.0 },
-    uCrust:     { type: "f", value: 2.0 },
+    uCrust:     { type: "f", value: 4.0 },
     uShin2:     { type: "f", value: 2.8 },
   }
   
@@ -246,7 +246,7 @@ function initScene() {
     material = new THREE.MeshLambertMaterial({ map : texture });
     plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
     plane.doubleSided = true;
-    plane.position.y = -0.15;
+    plane.position.y = -0.55;
     //plane.rotation.z = 0;  // Not sure what this number represents.
     g.scene.add(plane);
 
@@ -254,20 +254,18 @@ function initScene() {
     new THREE.CubeGeometry( 1.0, 1.0, 1.0 ),    // must be unit cube
     shader //new THREE.MeshLambertMaterial( { color: 0xCCCCCC } )
   );
-  /*g.cube2 = new THREE.Mesh(
+  g.cube2 = new THREE.Mesh(
     new THREE.CubeGeometry( 1.0, 1.0, 1.0 ),    // must be unit cube
     shader //new THREE.MeshLambertMaterial( { color: 0xCCCCCC } )
-  );*/
-  /*g.cylinder = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), new THREE.MeshBasicMaterial({
-            color: 0xAA5511
-        }));*/
+  );
 
-  //g.cube.position.set(0.0, 0.0, 0.0);
-  //g.cube.scale.set(3.0, 3.0, 3.0);      // scale later
+  //g.cube2.position.set(2.0, 0.0, 0.0);
+  //g.cube2.scale.set(1.1, 1.1, 1.1);      // scale later
+  //g.cube2.rotation.set(0.0, 0.0, 0.0);      // scale later
   //g.cylinder.positon.set(0.0, 0.0, 0.0);
   g.cube.position.set(0.0, 0.0, 0.0);
   g.scene.add(g.cube);
-  //g.scene.add(g.cube2);
+  g.scene.add(g.cube2);
   //g.scene.add(g.cylinder);
 }
 
