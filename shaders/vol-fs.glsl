@@ -53,6 +53,9 @@ uniform float uTMK2;
 uniform float uShininess;
 uniform float uCrust;
 uniform float uShin2;
+uniform float uR;
+uniform float uG;
+uniform float uB;
 
 float gStepSize;
 float gStepFactor;
@@ -171,8 +174,7 @@ vec4 raymarchNoLight(vec3 ro, vec3 rd) {
 vec4 raymarchLight(vec3 ro, vec3 rd,float tr) {
   vec3 step = rd*gStepSize;
   vec3 pos = ro;
-  
-  
+  vec3 uColor2 = vec3(uR/255.0,uG/255.0,uB/255.0);
   vec3 col = vec3(0.0);   // accumulated color
   float tm = 1.0;         // accumulated transmittance
   
@@ -180,14 +182,14 @@ vec4 raymarchLight(vec3 ro, vec3 rd,float tr) {
     // delta transmittance 
     float dtm = exp( -tr*gStepSize*sampleVolTex(pos) );
     //float dtm = exp( -uTMK2*gStepSize*sampleVolTex(pos) );
-    tm *= dtm*(1.000+(uShininess*0.001));
+    tm *= dtm*(1.000+(-uShininess*0.001));
     
     // get contribution per light
     for (int k=0; k<LIGHT_NUM; ++k) {
       vec3 ld = normalize( toLocal(uLightP[k])-pos );
       float ltm = getTransmittance(pos,ld);
       
-      col += (1.0-dtm) * uColor*uLightC[k] * tm * ltm;
+      col += (1.0-dtm) * uColor2*uLightC[k] * tm * ltm;
     }
     
     pos += step;
@@ -226,11 +228,11 @@ void main() {
   colCrust.z = 88.0/255.0;
   colCrust.a = 1.0;
 
-  float v = x2*x2+y2*y2/1.6;
+  float v = x2*x2/1.6+y2*y2;
   if(v > 0.15) {
-      vec4 temp = raymarchLight(ro, rd,uTMK2*8.0*v);// + vec4(0.1,0.1,0.1,1.0);
+      vec4 temp = raymarchLight(ro, rd,64.0*8.0*v);// + vec4(0.1,0.1,0.1,1.0);
       float sum = temp.x*temp.y*temp.z;
-      if(sum > 0.001  ) {
+      if(sum > 0.00001  ) {
           float flag = clamp(uShin2*((v-0.15)/0.08),0.0,1.0);
           temp = ((1.0-flag)*colCrust +flag*colCrust2)/(1.0/uCrust)+temp/uCrust;
           gl_FragColor = temp;
