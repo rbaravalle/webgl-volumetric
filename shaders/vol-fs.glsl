@@ -171,6 +171,7 @@ vec4 raymarchNoLight(vec3 ro, vec3 rd) {
   return vec4(col/alpha, alpha);
 }
 
+
 vec4 raymarchLight(vec3 ro, vec3 rd,float tr) {
   vec3 step = rd*gStepSize;
   vec3 pos = ro;
@@ -206,6 +207,51 @@ vec4 raymarchLight(vec3 ro, vec3 rd,float tr) {
   return vec4(col/alpha, alpha);
 }
 
+float raymarchSpec(vec3 ro, vec3 rd) {
+  vec3 step = rd*gStepSize;
+  vec3 pos = ro;
+  vec3 uColor2 = vec3(uR/255.0,uG/255.0,uB/255.0);
+  vec3 col = vec3(0.0);   // accumulated color
+  float tm = 1.0;         // accumulated transmittance
+  
+  // find intersection
+  for (int i=0; i<MAX_STEPS; ++i) {
+    // delta transmittance 
+    float v = sampleVolTex(pos);
+    
+    pos += step;
+    
+    if(v > 0.0) break;
+    // no surface
+    if( pos.x > 1.0 || pos.x < 0.0 ||
+      pos.y > 1.0 || pos.y < 0.0 ||
+      pos.z > 1.0 || pos.z < 0.0)
+      return 0.0;
+  }
+  //return 0.3;
+
+  // find normal at pos (gradient computation)
+  vec3 N;
+  N.x = sampleVolTex(vec3(pos.x+gStepSize,pos.y,pos.z)) - 
+        sampleVolTex(vec3(pos.x-gStepSize,pos.y,pos.z));
+  N.y = sampleVolTex(vec3(pos.x,pos.y+gStepSize,pos.z)) - 
+        sampleVolTex(vec3(pos.x,pos.y-gStepSize,pos.z));
+  N.z = sampleVolTex(vec3(pos.x,pos.y,pos.z+gStepSize)) - 
+        sampleVolTex(vec3(pos.x,pos.y,pos.z-gStepSize));
+  N = normalize(N);
+
+  vec3 L = normalize( toLocal(uLightP[0])-pos );
+  vec3 V = normalize(ro-pos);
+
+  // halfway vector
+  vec3 s = L+V;
+  vec3 H = s / normalize(s);
+
+  float alpha = 2.0;
+  return pow(dot(normalize(H),N),alpha); // Blinn Phong
+
+}
+
 void main() {
   // in world coords, just for now
   vec3 ro = vPos1n;
@@ -219,27 +265,32 @@ void main() {
   float x2 = (ro.x-0.5);
   float y2 = (ro.y-0.5);
   vec4 colCrust,colCrust2;
-  colCrust2.x = 104.0/255.0;
-  colCrust2.y = 52.0/255.0;
-  colCrust2.z = 30.0/255.0;
+  colCrust2.x = 207.0/255.0;
+  colCrust2.y = 154.0/255.0;
+  colCrust2.z = 88.0/255.0;
   colCrust2.a = 1.0;
-  colCrust.x = 165.0/255.0;
-  colCrust.y = 122.0/255.0;
-  colCrust.z = 88.0/255.0;
+  colCrust.x = 245.0/255.0;
+  colCrust.y = 148.0/255.0;
+  colCrust.z = 81.0/255.0;
   colCrust.a = 1.0;
 
-  float v = x2*x2/1.6+y2*y2;
-  if(v > 0.15) {
+  float v = x2*x2/2.1+y2*y2;
+  if(v > 0.77) {
       vec4 temp = raymarchLight(ro, rd,64.0*8.0*v);// + vec4(0.1,0.1,0.1,1.0);
+      //float spec = raymarchSpec(ro, rd); // specular component (BRDF)
+      //spec = abs(spec);
       float sum = temp.x*temp.y*temp.z;
       if(sum > 0.00001  ) {
-          float flag = clamp(uShin2*((v-0.15)/0.08),0.0,1.0);
-          temp = ((1.0-flag)*colCrust +flag*colCrust2)/(1.0/uCrust)+temp/uCrust;
+          float flag = clamp(uShin2*((v-0.15)/0.18),0.0,1.0);
+          temp = ((1.0-flag)*colCrust2 +flag*colCrust)+temp/(8.0-uCrust*0.5);//+spec/8.0;//+temp/uCrust;
+            // 
           gl_FragColor = temp;
       }
   }
   else
     gl_FragColor = raymarchLight(ro, rd,uTMK2) + vec4(0.2,0.2,0.2,1.0);
+
+  //gl_FragColor = raymarchLight(ro, rd,uTMK2);
 
   //gl_FragColor = vec4(uColor, getDensity(ro,rd));
   //gl_FragColor = vec4(vec3(sampleVolTex(pos)), 1.0);

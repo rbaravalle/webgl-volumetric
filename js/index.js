@@ -126,15 +126,15 @@ function animate() {
   //g.cube.rotation.y += 0.01;  
   //g.cube.position.y = 2.0*Math.sin(g.time);
   
-  /*g.lightP[0].x = 2.0*Math.sin(g.time);
+  g.lightP[0].x = 2.0*Math.sin(g.time);
   g.lightP[0].z = 2.0*Math.cos(g.time);
-  g.lightP[0].y = 1.5;*/
+  g.lightP[0].y = 1.5;
   
   /*g.lightP[1].x = 2.0;
   g.lightP[1].z = 2.0;
   g.lightP[1].y = 2.0*Math.sin(g.time);*/
   
-  g.time += 0.1;
+  g.time += 0.001;
 }
 
 // inputs THREE.Vector3
@@ -205,7 +205,7 @@ function initScene() {
   var voltex = THREE.ImageUtils.loadTexture("textures/imagen.png");
   voltex.minFilter = voltex.magFilter = THREE.LinearFilter;
   voltex.wrapS = voltex.wrapT = THREE.ClampToEdgeWrapping;
-  var SIDESIZE = 128;
+  var SIDESIZE = 100;
   var voltexDim = new THREE.Vector3(SIDESIZE, SIDESIZE, SIDESIZE);
   
   //var volcol = new THREE.Vector3(189/255.0, 175/255.0, 146/255.0);
@@ -299,16 +299,16 @@ function mousetrap() {
   var STEP = 0.05;
   
   Mousetrap.bind("up", function() {
-    g.offset.x-=STEP;
-  });
-  Mousetrap.bind("down", function() {
-    g.offset.x+=STEP;
-  });
-  Mousetrap.bind("left", function() {
     g.offset.z-=STEP;
   });
-  Mousetrap.bind("right", function() {
+  Mousetrap.bind("down", function() {
     g.offset.z+=STEP;
+  });
+  Mousetrap.bind("left", function() {
+    g.offset.y-=STEP;
+  });
+  Mousetrap.bind("right", function() {
+    g.offset.y+=STEP;
   });
   
   Mousetrap.bind("shift+r", function() {
