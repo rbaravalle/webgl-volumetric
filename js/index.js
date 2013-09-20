@@ -24,7 +24,7 @@ function init() {
   // renderer
   g.renderer = new THREE.WebGLRenderer({ 
     clearAlpha: 0,
-    clearColor: 0x222222,
+    clearColor: 0x000000,
     antialias: true
   });
   g.renderer.setSize( g.width, g.height );
@@ -198,7 +198,7 @@ function initScene() {
   addLight(new THREE.Vector3(2,2,-2), new THREE.Vector3(255/255.0, 255/255.0, 255/255.0));
   //addLight(new THREE.Vector3(-2, 1, -3), new THREE.Vector3(253/255.0, 245/255.0, 206/255.0));
  // add subtle ambient lighting
-    var ambientLight = new THREE.AmbientLight(0x555555);
+    var ambientLight = new THREE.AmbientLight(0x000000);
     g.scene.add(ambientLight);
   // the cube
   
@@ -257,7 +257,7 @@ function initScene() {
     plane.doubleSided = true;
     plane.position.y = -0.55;
     //plane.rotation.z = 0;  // Not sure what this number represents.
-    g.scene.add(plane);
+    //g.scene.add(plane);
 
   g.cube = new THREE.Mesh(
     new THREE.CubeGeometry( 1.0, 1.0, 1.0 ),    // must be unit cube
@@ -274,7 +274,7 @@ function initScene() {
   //g.cylinder.positon.set(0.0, 0.0, 0.0);
   g.cube.position.set(0.0, 0.0, 0.0);
   g.scene.add(g.cube);
-  g.scene.add(g.cube2);
+  //g.scene.add(g.cube2);
   //g.scene.add(g.cylinder);
 }
 
