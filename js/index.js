@@ -130,11 +130,11 @@ function animate() {
   g.lightP[0].z = 2.0*Math.cos(g.time);
   g.lightP[0].y = 1.5;
   
-  /*g.lightP[1].x = 2.0;
+  g.lightP[1].x = 2.0;
   g.lightP[1].z = 2.0;
-  g.lightP[1].y = 2.0*Math.sin(g.time);*/
+  g.lightP[1].y = 2.0*Math.sin(g.time);
   
-  g.time += 0.001;
+  g.time += 0.005;
 }
 
 // inputs THREE.Vector3
@@ -196,7 +196,7 @@ function initScene() {
   
   // lights
   addLight(new THREE.Vector3(2,2,-2), new THREE.Vector3(255/255.0, 255/255.0, 255/255.0));
-  //addLight(new THREE.Vector3(-2, 1, -3), new THREE.Vector3(253/255.0, 245/255.0, 206/255.0));
+  addLight(new THREE.Vector3(-2, 1, -3), new THREE.Vector3(253/255.0, 245/255.0, 206/255.0));
  // add subtle ambient lighting
     var ambientLight = new THREE.AmbientLight(0x000000);
     g.scene.add(ambientLight);
@@ -205,7 +205,7 @@ function initScene() {
   var voltex = THREE.ImageUtils.loadTexture("textures/imagen.png");
   voltex.minFilter = voltex.magFilter = THREE.LinearFilter;
   voltex.wrapS = voltex.wrapT = THREE.ClampToEdgeWrapping;
-  var SIDESIZE = 100;
+  var SIDESIZE = 128;
   var voltexDim = new THREE.Vector3(SIDESIZE, SIDESIZE, SIDESIZE);
   
   //var volcol = new THREE.Vector3(189/255.0, 175/255.0, 146/255.0);
@@ -224,14 +224,14 @@ function initScene() {
     uTex:       { type: "t", value: 0, texture: voltex },
     uTexDim:    { type: "v3", value: voltexDim },
     uOffset:    { type: "v3", value: g.offset },
-    uTMK:       { type: "f", value: 6.0 },
-    uTMK2:      { type: "f", value: 64.0 },
-    uShininess: { type: "f", value: 8.0 },
+    uTMK:       { type: "f", value: 12.0 },
+    uTMK2:      { type: "f", value: 45.0 },
+    uShininess: { type: "f", value: 1.0 },
     uCrust:     { type: "f", value: 4.0 },
     uShin2:     { type: "f", value: 2.8 },
-    uR:         { type: "f", value: 213.0 },
-    uG:         { type: "f", value: 150.0 },
-    uB:         { type: "f", value: 94.0 },
+    uR:         { type: "f", value: 225.0 },
+    uG:         { type: "f", value: 225.0 },
+    uB:         { type: "f", value: 225.0 },
   }
   
   var shader = new THREE.ShaderMaterial({

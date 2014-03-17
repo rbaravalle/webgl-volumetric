@@ -181,8 +181,8 @@ vec4 raymarchLight(vec3 ro, vec3 rd,float tr) {
   
   for (int i=0; i<MAX_STEPS; ++i) {
     // delta transmittance 
-    float dtm = exp( -tr*gStepSize*sampleVolTex(pos) );
-    //float dtm = exp( -uTMK2*gStepSize*sampleVolTex(pos) );
+    //float dtm = exp( -tr*gStepSize*sampleVolTex(pos) );
+    float dtm = exp( -uTMK2*gStepSize*sampleVolTex(pos) );
     tm *= dtm*(1.000+(-uShininess*0.001));
     
     // get contribution per light
