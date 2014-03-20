@@ -89,8 +89,10 @@ function init() {
   g.guiline.name("shininess");
   g.guiline = g.gui.add(g.uniforms.uCrust, "value").min(1.0).max(16.0).step(1);
   g.guiline.name("crust influence");
-  g.guiline = g.gui.add(g.uniforms.uShin2, "value").min(1.0).max(6.0).step(0.1);
+  g.guiline = g.gui.add(g.uniforms.uShin2, "value").min(1.0).max(18.0).step(0.01);
   g.guiline.name("second shininess");
+  g.guiline = g.gui.add(g.uniforms.uPhi, "value").min(0.0).max(3.14).step(0.01);
+  g.guiline.name("phi");
 
   window.addEventListener( 'resize', onWindowResize, false );
 }
@@ -202,7 +204,7 @@ function initScene() {
     g.scene.add(ambientLight);
   // the cube
   
-  var voltex = THREE.ImageUtils.loadTexture("textures/imagen.png");
+  var voltex = THREE.ImageUtils.loadTexture("textures/lbread3D.png");
   voltex.minFilter = voltex.magFilter = THREE.LinearFilter;
   voltex.wrapS = voltex.wrapT = THREE.ClampToEdgeWrapping;
   var SIDESIZE = 128;
@@ -224,20 +226,27 @@ function initScene() {
     uTex:       { type: "t", value: 0, texture: voltex },
     uTexDim:    { type: "v3", value: voltexDim },
     uOffset:    { type: "v3", value: g.offset },
-    uTMK:       { type: "f", value: 12.0 },
-    uTMK2:      { type: "f", value: 45.0 },
+    uTMK:       { type: "f", value: 4.0 },
+    uTMK2:      { type: "f", value: 25.0 },
     uShininess: { type: "f", value: 1.0 },
     uCrust:     { type: "f", value: 4.0 },
     uShin2:     { type: "f", value: 2.8 },
-    uR:         { type: "f", value: 225.0 },
-    uG:         { type: "f", value: 225.0 },
-    uB:         { type: "f", value: 225.0 },
+    uR:         { type: "f", value: 152.0 },
+    uG:         { type: "f", value: 137.0 },
+    uB:         { type: "f", value: 108.0 },
+    uPhi:         { type: "f", value: 1.0 },
   }
   
   var shader = new THREE.ShaderMaterial({
     uniforms:       g.uniforms,
     vertexShader:   loadTextFile("shaders/vol-vs.glsl"),
     fragmentShader: loadTextFile("shaders/vol-fs.glsl")
+  });
+
+  var shader2 = new THREE.ShaderMaterial({
+    uniforms:       g.uniforms,
+    vertexShader:   loadTextFile("shaders/vol-vs.glsl"),
+    fragmentShader: loadTextFile("shaders/vol-fs2.glsl")
   });
   
   // debug with wireframe
@@ -265,7 +274,7 @@ function initScene() {
   );
   g.cube2 = new THREE.Mesh(
     new THREE.CubeGeometry( 1.0, 1.0, 1.0 ),    // must be unit cube
-    shader //new THREE.MeshLambertMaterial( { color: 0xCCCCCC } )
+    shader2 //new THREE.MeshLambertMaterial( { color: 0xCCCCCC } )
   );
 
   //g.cube2.position.set(2.0, 0.0, 0.0);
@@ -273,8 +282,9 @@ function initScene() {
   //g.cube2.rotation.set(0.0, 0.0, 0.0);      // scale later
   //g.cylinder.positon.set(0.0, 0.0, 0.0);
   g.cube.position.set(0.0, 0.0, 0.0);
-  g.scene.add(g.cube);
-  //g.scene.add(g.cube2);
+  //g.scene.add(g.cube);
+  g.cube.position.set(-1.0, 0.0, 0.0);
+  g.scene.add(g.cube2);
   //g.scene.add(g.cylinder);
 }
 

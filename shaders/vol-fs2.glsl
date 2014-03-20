@@ -20,7 +20,7 @@ precision highp float;
 //---------------------------------------------------------
 
 // 32 48 64 96 128
-#define MAX_STEPS 128
+#define MAX_STEPS 256
 
 #define LIGHT_NUM 1
 //#define uTMK 20.0
@@ -56,6 +56,7 @@ uniform float uShin2;
 uniform float uR;
 uniform float uG;
 uniform float uB;
+uniform float uPhi;
 
 float gStepSize;
 float gStepFactor;
@@ -129,7 +130,7 @@ float getTransmittance(vec3 ro, vec3 rd) {
   
   float tm = 1.0;
   
-  for (int i=0; i<MAX_STEPS; ++i) {
+  for (int i=0; i<MAX_STEPS/4; ++i) {
     tm *= exp( -uTMK*gStepSize*sampleVolTex(pos) );
     
     pos += step;
@@ -179,23 +180,42 @@ vec4 raymarchLight(vec3 ro, vec3 rd,float tr) {
   vec3 col = vec3(0.0);   // accumulated color
   float tm = 1.0;         // accumulated transmittance
   
-  for (int i=0; i<MAX_STEPS; ++i) {
+  float cuanto = 0.0;
+  for (int i=0; i<MAX_STEPS/4; ++i) {
     // delta transmittance 
     //float dtm = exp( -tr*gStepSize*sampleVolTex(pos) );
     float dtm = exp( -uTMK2*gStepSize*sampleVolTex(pos) );
-    tm *= dtm*(1.000+(-uShininess*0.001));
+    cuanto+=dtm;
+
+   //tm *= dtm*(1.000+(uShininess*0.001));
+    tm *= dtm*(1.000+(uShininess*0.001));
     
     // get contribution per light
-    for (int k=0; k<LIGHT_NUM; ++k) {
+    for (int k=0; k<1/*LIGHT_NUM*/; ++k) {
       vec3 ld = normalize( toLocal(uLightP[k])-pos );
       float ltm = getTransmittance(pos,ld);
+      float mean;
+      float d = length(pos-ro);
+      float r = d*tan(uPhi/2.0);
+      if(uCrust>3.0) {
+          float ltm2 = getTransmittance(pos,normalize(ld+vec3(r,0.0,0.0)));
+          float ltm3 = getTransmittance(pos,normalize(ld+vec3(-r,0.0,0.0)));
+          float ltm4 = getTransmittance(pos,normalize(ld+vec3(0.0,-r,0.0)));
+          float ltm5 = getTransmittance(pos,normalize(ld+vec3(0.0,r,0.0)));
+          float ltm6 = getTransmittance(pos,normalize(ld+vec3(0.0,0.0,-r)));
+          float ltm7 = getTransmittance(pos,normalize(ld+vec3(0.0,0.0,r)));
+          mean = ltm+(ltm2+ltm3+ltm4+ltm5+ltm6+ltm7)/6.0;
+      }
+      else mean = ltm;
+
       
-      col += (1.0-dtm) * uColor2*uLightC[k] * tm * ltm;
+      col += (1.0-dtm) * uColor2*uLightC[k] * tm * mean;
     }
-    
+
     pos += step;
+
     
-    if (tm < TM_MIN ||
+    if ( tm < TM_MIN ||
       pos.x > 1.0 || pos.x < 0.0 ||
       pos.y > 1.0 || pos.y < 0.0 ||
       pos.z > 1.0 || pos.z < 0.0)
@@ -260,9 +280,9 @@ void main() {
   
   // step_size = root_three / max_steps ; to get through diagonal  
   gStepSize = ROOTTHREE / float(MAX_STEPS);
-  //gStepFactor = 32.0 * gStepSize;
+  gStepFactor = 32.0 * gStepSize;
   
-  /*float x2 = (ro.x-0.5);
+  float x2 = (ro.x-0.5);
   float y2 = (ro.y-0.5);
   vec4 colCrust,colCrust2;
   colCrust2.x = 207.0/255.0;
@@ -287,8 +307,8 @@ void main() {
           gl_FragColor = temp;
       }
   }
-  else*/
-    gl_FragColor = raymarchLight(ro, rd,uTMK2) + vec4(0.2,0.2,0.2,0.0);
+  else
+    gl_FragColor = raymarchLight(ro, rd,uTMK2)+ vec4(0.2,0.2,0.2,0.0);
 
   //gl_FragColor = raymarchLight(ro, rd,uTMK2);
 
