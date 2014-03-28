@@ -20,11 +20,11 @@ precision highp float;
 //---------------------------------------------------------
 
 // 32 48 64 96 128
-#define MAX_STEPS 256
+#define MAX_STEPS 200
 
 #define LIGHT_NUM 1
 //#define uTMK 20.0
-#define TM_MIN 0.25
+#define TM_MIN 0.0
 //#define TM_MAX 0.85
 
 
@@ -78,7 +78,6 @@ float randn(vec2 co){
 
 float sampleVolTex(vec3 pos) {
   pos = pos + uOffset; // TESTDEBUG
-  
   // note: z is up in 3D tex coords, pos.z is tex.y, pos.y is zSlice
   float zSlice = (1.0-pos.y)*(uTexDim.z-1.0);   // float value of slice number, slice 0th to 63rd
   
@@ -130,7 +129,7 @@ float getTransmittance(vec3 ro, vec3 rd) {
   
   float tm = 1.0;
   
-  for (int i=0; i<MAX_STEPS/4; ++i) {
+  for (int i=0; i<MAX_STEPS; ++i) {
     tm *= exp( -uTMK*gStepSize*sampleVolTex(pos) );
     
     pos += step;
@@ -181,7 +180,7 @@ vec4 raymarchLight(vec3 ro, vec3 rd,float tr) {
   float tm = 1.0;         // accumulated transmittance
   
   float cuanto = 0.0;
-  for (int i=0; i<MAX_STEPS/4; ++i) {
+  for (int i=0; i<MAX_STEPS; ++i) {
     // delta transmittance 
     //float dtm = exp( -tr*gStepSize*sampleVolTex(pos) );
     float dtm = exp( -uTMK2*gStepSize*sampleVolTex(pos) );
@@ -197,7 +196,7 @@ vec4 raymarchLight(vec3 ro, vec3 rd,float tr) {
       float mean;
       float d = length(pos-ro);
       float r = d*tan(uPhi/2.0);
-      if(uCrust>3.0) {
+      /*if(uCrust>3.0) {
           float ltm2 = getTransmittance(pos,normalize(ld+vec3(r,0.0,0.0)));
           float ltm3 = getTransmittance(pos,normalize(ld+vec3(-r,0.0,0.0)));
           float ltm4 = getTransmittance(pos,normalize(ld+vec3(0.0,-r,0.0)));
@@ -205,8 +204,8 @@ vec4 raymarchLight(vec3 ro, vec3 rd,float tr) {
           float ltm6 = getTransmittance(pos,normalize(ld+vec3(0.0,0.0,-r)));
           float ltm7 = getTransmittance(pos,normalize(ld+vec3(0.0,0.0,r)));
           mean = ltm+(ltm2+ltm3+ltm4+ltm5+ltm6+ltm7)/6.0;
-      }
-      else mean = ltm;
+      }*/
+      /*else*/ mean = ltm;
 
       
       col += (1.0-dtm) * uColor2*uLightC[k] * tm * mean;
@@ -230,7 +229,7 @@ vec4 raymarchLight(vec3 ro, vec3 rd,float tr) {
 float raymarchSpec(vec3 ro, vec3 rd) {
   vec3 step = rd*gStepSize;
   vec3 pos = ro;
-  vec3 uColor2 = vec3(uR/255.0,uG/255.0,uB/255.0);
+  vec3 uColor2 = vec3(150.0/255.0,150.0/255.0,150.0/255.0);
   vec3 col = vec3(0.0);   // accumulated color
   float tm = 1.0;         // accumulated transmittance
   
@@ -267,7 +266,7 @@ float raymarchSpec(vec3 ro, vec3 rd) {
   vec3 s = L+V;
   vec3 H = s / normalize(s);
 
-  float alpha = 2.0;
+  float alpha = 9.0;
   return pow(dot(normalize(H),N),alpha); // Blinn Phong
 
 }
@@ -282,7 +281,7 @@ void main() {
   gStepSize = ROOTTHREE / float(MAX_STEPS);
   gStepFactor = 32.0 * gStepSize;
   
-  float x2 = (ro.x-0.5);
+  /*float x2 = (ro.x-0.5);
   float y2 = (ro.y-0.5);
   vec4 colCrust,colCrust2;
   colCrust2.x = 207.0/255.0;
@@ -307,10 +306,11 @@ void main() {
           gl_FragColor = temp;
       }
   }
-  else
-    gl_FragColor = raymarchLight(ro, rd,uTMK2)+ vec4(0.2,0.2,0.2,0.0);
+  else*/
+  //  gl_FragColor = raymarchSpec(ro, rd)+ vec4(0.2,0.2,0.2,0.0);
 
-  //gl_FragColor = raymarchLight(ro, rd,uTMK2);
+  float spec = raymarchSpec(ro, rd);
+  gl_FragColor = /*0.1*vec4(spec,spec,spec,0.0)+*/raymarchLight(ro, rd,uTMK2)+ vec4(0.2,0.2,0.2,0.0);
 
   //gl_FragColor = vec4(uColor, getDensity(ro,rd));
   //gl_FragColor = vec4(vec3(sampleVolTex(pos)), 1.0);

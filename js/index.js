@@ -24,7 +24,7 @@ function init() {
   // renderer
   g.renderer = new THREE.WebGLRenderer({ 
     clearAlpha: 0,
-    clearColor: 0x000000,
+    clearColor: 0xAAAAAA,
     antialias: true
   });
   g.renderer.setSize( g.width, g.height );
@@ -136,7 +136,7 @@ function animate() {
   g.lightP[1].z = 2.0;
   g.lightP[1].y = 2.0*Math.sin(g.time);
   
-  g.time += 0.005;
+  g.time += 0.0055;
 }
 
 // inputs THREE.Vector3
@@ -204,7 +204,7 @@ function initScene() {
     g.scene.add(ambientLight);
   // the cube
   
-  var voltex = THREE.ImageUtils.loadTexture("textures/lbread3D.png");
+  var voltex = THREE.ImageUtils.loadTexture("textures/imagenSystem2.png");
   voltex.minFilter = voltex.magFilter = THREE.LinearFilter;
   voltex.wrapS = voltex.wrapT = THREE.ClampToEdgeWrapping;
   var SIDESIZE = 128;
@@ -281,11 +281,12 @@ function initScene() {
   //g.cube2.scale.set(1.1, 1.1, 1.1);      // scale later
   //g.cube2.rotation.set(0.0, 0.0, 0.0);      // scale later
   //g.cylinder.positon.set(0.0, 0.0, 0.0);
-  g.cube.position.set(0.0, 0.0, 0.0);
+  //g.cube.position.set(0.0, 0.0, 0.0);
   //g.scene.add(g.cube);
-  g.cube.position.set(-1.0, 0.0, 0.0);
+  g.cube2.position.set(0.0, 0.0, 0.0);
   g.scene.add(g.cube2);
   //g.scene.add(g.cylinder);
+
 }
 
 // perform synchronous ajax load
